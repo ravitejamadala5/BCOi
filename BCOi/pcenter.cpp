@@ -272,11 +272,74 @@ int main(){
 			cout << "Critical distance is --> " << d[cd][center] << endl;
 			center = next_center;
 
-		}
+	}
 
-		cout << p << "   " << q <<  "   " << new_centers.size() << endl;
+	cout << p << "   " << q <<  "   " << new_centers.size() << endl;
 
 	// Removing the q solutions iteratively
+    int expected_ans = -1;
+    int val;
+    for(int i = 0 ; i < n; i++){
+        int temp_dist = -1;
+        for (int  k = 0; k < new_centers.size(); k++) {
+            if (new_centers[k] != i) {
+                if(temp_dist == -1 || d[i][new_centers[k]] < temp_dist) {
+                    temp_dist = d[i][new_centers[k]];
+                } 
+            }
+        }
+
+        if (expected_ans == -1 || temp_dist > expected_ans) {
+            expected_ans = temp_dist;
+            val = i;
+        }
+    }
+
+    cout << "P+Q Centers" << endl;
+    for (vector<int>::const_iterator i = new_centers.begin(); i != new_centers.end(); ++i) {
+        std::cout << *i << ' ';
+    }
+    cout << endl;
+    cout << "Expected solution is -> " << expected_ans << " for index " << val << endl;
+
+    for(int j = 0 ; j < q ; j++){
+        int value;
+        int skip_center = 0;
+        int delta = -1;
+        while(skip_center != new_centers.size()) {
+            int new_ans = -1;
+            int val1;
+            
+            for(int i = 0 ; i < n; i++){
+                int dist_center = -1;
+                for (int  k = 0; k < new_centers.size(); k++) {
+                    if (new_centers[k] != i && skip_center != k) {
+                        if(dist_center == -1 || d[i][new_centers[k]] < dist_center) {
+                            dist_center = d[i][new_centers[k]];
+                        } 
+                    }
+                }
+
+                if (new_ans == -1 || dist_center > new_ans) {
+                    new_ans = dist_center;
+                    val1 = i;
+                }
+            }
+            //cout << "New ans " << new_ans << " value - " << val1 << endl;  
+            if(delta == -1 || abs(new_ans - expected_ans) < delta) {
+                delta = abs(new_ans - expected_ans);
+                value = skip_center; 
+            }
+            skip_center++;
+        }
+
+        new_centers.erase(new_centers.begin() + value);
+        cout << "New centers" << endl;
+        for (vector<int>::const_iterator i = new_centers.begin(); i != new_centers.end(); ++i) {
+            std::cout << *i << ' ';
+        }
+        cout << endl;
+    }
 
 	return 0;
 
